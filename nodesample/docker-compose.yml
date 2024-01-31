@@ -1,11 +1,18 @@
 version: "3.8"
 services:
-    nodeserver:
+    
+    orbit:
+        restart: always
+        build:
+            context: ./orbit
+        ports:
+            - "5001:5001"
+    qwik-app:
         restart: always
         build:
             context: ./app
         ports:
-            - "5000:5000"
+            - "3030:3030" 
     nginx:
         restart: always
         build:
