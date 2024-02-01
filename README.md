@@ -331,3 +331,43 @@ Note: make sure you stop your system’s instance of Nginx before running the Do
 Next, I hope to do a tutorial about load balancing and how we can add a React.js frontend to the same docker-compose flow.
 
 [Deploy multi-container Docker app with CI/CD to Elastic Beanstalk with AWS ECR, CodeBuild and CodeDeploy](https://ashwin9798.medium.com/deploy-multi-container-docker-app-with-ci-cd-to-elastic-beanstalk-w-aws-ecr-codebuild-and-ed5d03770b7b)
+
+docker for ng app
+```
+FROM node:18.17 as builder
+ARG BASE_URL='xxxxx'
+ARG MNE_CORE_URL='xxxxx'
+ARG DATA_SYNC_API_URL='xxxxx'
+ARG BASE_CLIENT_PORT='xxxxx'
+ARG RELEASE_VERSION='xxxxx'
+ARG SUPERSET_BASE_URL='xxxxx'
+ARG SUPERSET_SERVICE_API_URL='xxxxx'
+ARG DOMAIN_NAME='xxxxx'
+ARG APPLICATION_NAME='xxxxx'
+
+WORKDIR /app
+COPY *.npmrc ./
+COPY *.json ./
+RUN yarn
+COPY . .
+RUN sed -i "s|WEB_URL|${BASE_URL}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|MNE_CORE_BASE_URL|${MNE_CORE_URL}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|DATA_SYNC_SERVICE_URL|${DATA_SYNC_API_URL}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|CLIENT_PORT|${BASE_CLIENT_PORT}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|VERSION|${RELEASE_VERSION}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|SUPERSET_URL|${SUPERSET_BASE_URL}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|SUPERSET_SERVICE_URL|${SUPERSET_SERVICE_API_URL}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|WEB_ADDRESS|${DOMAIN_NAME}|g" /app/src/environments/environment.prod.ts
+RUN sed -i "s|APP_NAME|${APPLICATION_NAME}|g" /app/src/environments/environment.prod.ts
+RUN npm run build --prod --base-href=admin
+WORKDIR /app/dist/admin-client
+RUN sed -i 's|<base href="/">|<base href="/admin/">|g' index.html
+
+FROM nginx:alpine3.18-slim
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist/admin-client /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+
+
+```
