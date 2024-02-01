@@ -1,6 +1,5 @@
 ARG NODE_VERSION=18.18.2
-#ARG BASE_URL='xxxxx' 
-#RUN sed -i "s|WEB_URL|${BASE_URL}|g" /app/src/environments/environment.prod.ts
+
 ################################################################################
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine as base

@@ -371,3 +371,61 @@ CMD ["nginx", "-g", "daemon off;"]
 
 
 ```
+
+docker-compose.yml for some useful container
+```
+version: '3'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.7-management
+    container_name: rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    restart: always
+    volumes:
+      - ./rabbitmq-data:/var/lib/rabbitmq
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - ./mongodb-data:/data/db
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    restart: always
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+  
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgresql
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    volumes:
+      - ./redis-data:/data
+    ports: 
+      - "6379:6379"
+
+```
