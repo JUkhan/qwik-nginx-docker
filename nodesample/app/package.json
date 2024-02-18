@@ -24,7 +24,9 @@
     "preview": "qwik build preview && vite preview --open",
     "serve": "node server/entry.fastify",
     "start": "vite --open --mode ssr",
-    "qwik": "qwik"
+    "qwik": "qwik",
+    "prisma:inline": "cp ./node_modules/.prisma/client/*.js ./node_modules/@prisma/client",
+    "prisma:generate2": "prisma generate && npm run prisma:inline"
   },
   "devDependencies": {
     "@builder.io/qwik": "^1.4.3",
