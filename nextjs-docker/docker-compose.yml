@@ -1,0 +1,55 @@
+# specify the version of docker-compose
+version: '3.8'
+
+# define the services to be run
+services:
+  # define the db service
+  mongo:
+    # specify the image to use for the db service from docker hub.
+    image: mongo
+    # specify the ports to expose for the db service
+    ports:
+      - 27017:27017
+    restart: always
+    # specify the volumes to mount for the db service
+    # we're mounting the volume named "amazona" inside the container at /data/db directory
+    # this is done so that the data inside the mongodb container is persisted even if the container is stopped
+    volumes:
+      - streamstech:/data/db
+
+  # define the web service for next.js app.
+  web:
+    # we use depends_on to specify that service depends on another service
+    # in this case, we specify that the web depends on the mongo service
+    # this means that the mongo service will be started before the web service
+    depends_on:
+      - mongo
+    restart: always
+    # specify the environment variables for the web service
+    # these environment variables will be available inside the container
+    environment:
+      - DATABASE_URI=${DATABASE_URI}
+      - PAYLOAD_SECRET=${PAYLOAD_SECRET}
+      - PAYLOAD_PUBLIC_SERVER_URL=${PAYLOAD_PUBLIC_SERVER_URL}
+      - NEXT_PUBLIC_SERVER_URL=${NEXT_PUBLIC_SERVER_URL}
+      - NEXT_PUBLIC_IS_LIVE=${NEXT_PUBLIC_IS_LIVE}
+      - PAYLOAD_PUBLIC_DRAFT_SECRET=${PAYLOAD_PUBLIC_DRAFT_SECRET}
+      - NEXT_PRIVATE_DRAFT_SECRET=${NEXT_PRIVATE_DRAFT_SECRET}
+      - REVALIDATION_KEY=${REVALIDATION_KEY}
+      - NEXT_PRIVATE_REVALIDATION_KEY=${NEXT_PRIVATE_REVALIDATION_KEY}
+
+    # specify the build context for the web service
+    # this is the directory where the Dockerfile for the web service is located
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # specify the ports to expose for the web service
+    # the first number is the port on the host machine
+    # the second number is the port inside the container
+    ports:
+      - 3000:3000
+
+# define the volumes to be used by the services
+volumes:
+  streamstech:

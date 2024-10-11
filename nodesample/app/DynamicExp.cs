@@ -18,8 +18,8 @@ namespace ConsoleApp3
                new User("arif", 18),
                new User("talha", 12)
             };
-            var tokens = "(    first_name =    \"talha\"   ) or ( age <= 20 and first_name = arif)";
-            foreach (var item in list.AsQueryable().Where(GetExpression<User>(tokens)))
+            var str = "(    first_name =    \"talha\"   ) or ( age <= 20 and first_name = arif)";
+            foreach (var item in list.AsQueryable().Where(GetExpression<User>(str)))
             {
                 Console.WriteLine(item.firstName);
             }
