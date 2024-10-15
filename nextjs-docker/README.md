@@ -37,3 +37,7 @@ This command will generate a script that you can copy and paste into your termin
 ## clean up
 `docker exec -it <container_name> /bin/bash`
 `rm -rf /dump`
+
+## How To Secure Nginx with Let's Encrypt on Ubuntu 20.04 (HTTPS)
+
+[link](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-20-04#step-2-confirming-nginx-s-configuration)
